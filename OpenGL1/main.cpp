@@ -8,11 +8,9 @@
 // Window dimensions
 const GLuint WIDTH = 800, HEIGHT = 600;
 
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
-{
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GL_TRUE);
-}
+
+// function interface
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
 // Shaders
 const GLchar* vertexShaderSource = "#version 330 core\n"
@@ -156,6 +154,7 @@ int main()
 		glBindVertexArray(VAO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
 
 
 		// Swap double buffers
@@ -170,4 +169,10 @@ int main()
 	// Terminate GLFW, clearing any resources allocated by GLFW.
 	glfwTerminate();
 	return 0;
+}
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
+{
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, GL_TRUE);
 }

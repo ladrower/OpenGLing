@@ -14,18 +14,22 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 // Shaders
 const GLchar* vertexShaderSource = "#version 330 core\n"
-	"layout (location = 0) in vec3 position;\n"
+	"layout (location = 0) in vec3 position;\n" // The position variable has attribute position 0
+	"layout(location = 1) in vec3 color;\n" // The color variable has attribute position 1
+	"out vec3 customColor;\n"
 	"void main()\n"
 	"{\n"
 	"gl_Position = vec4(position, 1.0);\n"
+	"customColor = color;\n" // Set customColor to the input color we got from the vertex data
 	"}\0";
+
 
 const GLchar* fragmentShaderSource = "#version 330 core\n"
 	"out vec4 color;\n"
-	"uniform vec4 customColor;\n" // We set this variable in the OpenGL code.
+	"in vec3 customColor;\n" // We get this variable from vertex shader output.
 	"void main()\n"
 	"{\n"
-	"color = customColor;\n"
+	"color = vec4(customColor, 1.0f);\n"
 	"}\0";
 
 int main()
@@ -108,10 +112,11 @@ int main()
 
 	// Rectangle vertices
 	GLfloat vertices[] = {
-		0.5f, 0.5f, 0.0f,  // Top Right
-		0.5f, -0.5f, 0.0f,  // Bottom Right
-		-0.5f, -0.5f, 0.0f,  // Bottom Left
-		-0.5f, 0.5f, 0.0f   // Top Left 
+		// Positions         // Colors
+		0.5f, 0.5f, 0.0f,    1.0f, 0.0f, 0.0f,  // Top Right
+		0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,  // Bottom Right
+		-0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  // Bottom Left
+		-0.5f, 0.5f, 0.0f,   0.0f, 0.0f, 1.0f,  // Top Left 
 	};
 	GLuint indices[] = {  // Note that we start from 0!
 		0, 1, 3,   // First Triangle
@@ -132,8 +137,13 @@ int main()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+	// Position attribute 0
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
+
+	// Color attribute 1
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(1);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0); // Note that this is allowed, the call to glVertexAttribPointer registered VBO as the currently bound vertex buffer object so afterwards we can safely unbind
 

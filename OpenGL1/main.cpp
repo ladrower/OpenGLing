@@ -17,14 +17,15 @@ const GLchar* vertexShaderSource = "#version 330 core\n"
 	"layout (location = 0) in vec3 position;\n"
 	"void main()\n"
 	"{\n"
-	"gl_Position = vec4(position.x, position.y, position.z, 1.0);\n"
+	"gl_Position = vec4(position, 1.0);\n"
 	"}\0";
 
 const GLchar* fragmentShaderSource = "#version 330 core\n"
 	"out vec4 color;\n"
+	"uniform vec4 customColor;\n" // We set this variable in the OpenGL code.
 	"void main()\n"
 	"{\n"
-	"color = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+	"color = customColor;\n"
 	"}\0";
 
 int main()
@@ -42,7 +43,10 @@ int main()
 		glfwTerminate();
 		return -1;
 	}
+
 	glfwMakeContextCurrent(window);
+
+	std::cout << "RUNNING VERSION " << glGetString(GL_VERSION);
 
 	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK)
@@ -136,7 +140,7 @@ int main()
 	glBindVertexArray(0); // Unbind VAO (it's always a good thing to unbind any buffer/array to prevent strange bugs), remember: do NOT unbind the EBO, keep it bound to this VAO
 
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_COLOR);
 
 	// Run game loop
 	while (!glfwWindowShouldClose(window))
@@ -149,8 +153,15 @@ int main()
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		// Draw our first triangle
+		
 		glUseProgram(shaderProgram);
+
+		// Update the uniform color
+		GLfloat timeValue = glfwGetTime();
+		GLfloat blueValue = (sin(timeValue) / 2) + 0.5;
+		GLint vertexColorLocation = glGetUniformLocation(shaderProgram, "customColor");
+		glUniform4f(vertexColorLocation, 0.0f, 0.0f, blueValue, 1.0f);
+
 		glBindVertexArray(VAO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

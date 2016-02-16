@@ -39,7 +39,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\..\..\Downloads\container.jpg">
+    <Image Include="container.jpg">
       <Filter>Resource Files\textures</Filter>
     </Image>
   </ItemGroup>

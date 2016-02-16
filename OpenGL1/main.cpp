@@ -5,32 +5,14 @@
 // GLFW
 #include <GLFW/glfw3.h>
 
+// Headers includes
+#include "Shader.h"
+
 // Window dimensions
 const GLuint WIDTH = 800, HEIGHT = 600;
 
-
 // function interface
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
-
-// Shaders
-const GLchar* vertexShaderSource = "#version 330 core\n"
-	"layout (location = 0) in vec3 position;\n" // The position variable has attribute position 0
-	"layout(location = 1) in vec3 color;\n" // The color variable has attribute position 1
-	"out vec3 customColor;\n"
-	"void main()\n"
-	"{\n"
-	"gl_Position = vec4(position, 1.0);\n"
-	"customColor = color;\n" // Set customColor to the input color we got from the vertex data
-	"}\0";
-
-
-const GLchar* fragmentShaderSource = "#version 330 core\n"
-	"out vec4 color;\n"
-	"in vec3 customColor;\n" // We get this variable from vertex shader output.
-	"void main()\n"
-	"{\n"
-	"color = vec4(customColor, 1.0f);\n"
-	"}\0";
 
 int main()
 {
@@ -65,50 +47,10 @@ int main()
 	glfwSetKeyCallback(window, key_callback);
 
 	// Build and compile our shader program
-	// Vertex shader
-	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-	glCompileShader(vertexShader);
-
-	// Check for compile time errors
-	GLint success;
-	GLchar infoLog[512];
-	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-	}
-
-	// Fragment shader
-	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-	glCompileShader(fragmentShader);
-
-	// Check for compile time errors
-	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-	}
-
-	// Link shaders
-	GLuint shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
-	glLinkProgram(shaderProgram);
-
-	// Check for linking errors
-	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-	if (!success) {
-		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
-	}
-
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
-
+	Shader ourShader(
+		"default.vs",  // Vertex shader
+		"default.frag" // Fragment shader
+	);
 
 	// Rectangle vertices
 	GLfloat vertices[] = {
@@ -163,14 +105,7 @@ int main()
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		
-		glUseProgram(shaderProgram);
-
-		// Update the uniform color
-		GLfloat timeValue = glfwGetTime();
-		GLfloat blueValue = (sin(timeValue) / 2) + 0.5;
-		GLint vertexColorLocation = glGetUniformLocation(shaderProgram, "customColor");
-		glUniform4f(vertexColorLocation, 0.0f, 0.0f, blueValue, 1.0f);
+		ourShader.Use();
 
 		glBindVertexArray(VAO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);

@@ -110,6 +110,9 @@ int main()
 
 		ourShader.Use();
 
+		GLint vertexOffsetXLocation = glGetUniformLocation(ourShader.Program, "horizontalOffset");
+		glUniform1f(vertexOffsetXLocation, 0.1f);
+
 		glBindVertexArray(VAO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

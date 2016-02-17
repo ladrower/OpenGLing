@@ -13,12 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Resource Files\shaders">
-      <UniqueIdentifier>{a6be5e26-85fc-4520-9b0a-1199f406eba3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\textures">
-      <UniqueIdentifier>{f091de56-0d0a-4076-b0d9-96e394856db5}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -29,18 +23,5 @@
     <ClInclude Include="Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="default.vs">
-      <Filter>Resource Files\shaders</Filter>
-    </None>
-    <None Include="default.frag">
-      <Filter>Resource Files\shaders</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="container.jpg">
-      <Filter>Resource Files\textures</Filter>
-    </Image>
   </ItemGroup>
 </Project>

@@ -50,8 +50,8 @@ int main()
 
 	// Build and compile our shader program
 	Shader ourShader(
-		"default.vs",  // Vertex shader
-		"default.frag" // Fragment shader
+		"resources/shaders/textures.vs",  // Vertex shader
+		"resources/shaders/textures.frag" // Fragment shader
 	);
 
 	// Set up vertex data (and buffer(s)) and attribute pointers
@@ -111,7 +111,7 @@ int main()
 
 	// Load image, create texture and generate mipmaps
 	int width, height;
-	unsigned char* image = SOIL_load_image("container.jpg", &width, &height, 0, SOIL_LOAD_RGB);
+	unsigned char* image = SOIL_load_image("resources/textures/container.jpg", &width, &height, 0, SOIL_LOAD_RGB);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	SOIL_free_image_data(image);

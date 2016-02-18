@@ -13,6 +13,8 @@
 // Window dimensions
 const GLuint WIDTH = 800, HEIGHT = 600;
 
+float mixFactor = 0.2f;
+
 // function interface
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
@@ -162,6 +164,10 @@ int main()
 		glBindTexture(GL_TEXTURE_2D, textures[1]);
 		glUniform1i(glGetUniformLocation(ourShader.Program, "customTexture2"), 1);
 
+		// Set the value of textures mix factor
+		GLfloat mixFactorLocation = glGetUniformLocation(ourShader.Program, "mixFactor");
+		glUniform1f(mixFactorLocation, mixFactor);
+
 
 		// Draw container
 		glBindVertexArray(VAO);
@@ -188,4 +194,17 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
+
+	// Update the shaders mix factor value using arrow keys
+	if (key == GLFW_KEY_UP && action == GLFW_PRESS) {
+		mixFactor += 0.1f;
+		if (mixFactor > 1.0f)
+			mixFactor = 1.0f;
+	}
+
+	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS) {
+		mixFactor -= 0.1f;
+		if (mixFactor < 0.0f)
+			mixFactor = 0.0f;
+	}
 }

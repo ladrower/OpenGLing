@@ -6,6 +6,10 @@
 #include <GLFW/glfw3.h>
 // Simple OpenGL Image Library
 #include <SOIL/SOIL.h>
+// GL Math library
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 // Other includes
 #include "Shader.h"
@@ -162,6 +166,12 @@ int main()
 		glBindTexture(GL_TEXTURE_2D, textures[1]);
 		glUniform1i(glGetUniformLocation(ourShader.Program, "customTexture2"), 1);
 
+		glm::mat4 trans;
+		trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+		trans = glm::rotate(trans, (GLfloat)glfwGetTime() * 50.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+
+		GLuint transformLoc = glGetUniformLocation(ourShader.Program, "transform");
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
 		// Draw container
 		glBindVertexArray(VAO);

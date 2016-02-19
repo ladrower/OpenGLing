@@ -15,7 +15,10 @@
 #include "Shader.h"
 
 // Window dimensions
-const GLuint WIDTH = 800, HEIGHT = 600;
+const GLuint WIDTH = 1280, HEIGHT = 1024;
+
+GLfloat cameraDistanceZ = -3.0f;
+GLfloat cameraDistanceX = 0.0f;
 
 // function interface
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
@@ -200,7 +203,7 @@ int main()
 		glm::mat4 view; // view matrix
 		glm::mat4 projection; // projection matrix
 
-		view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));	// Note that we're translating the scene in the reverse direction of where we want to move
+		view = glm::translate(view, glm::vec3(cameraDistanceX, 0.0f, cameraDistanceZ));	// Note that we're translating the scene in the reverse direction of where we want to move
 		projection = glm::perspective(45.0f, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
 
 		// Pass matrixes to their uniform variables in fragment shader
@@ -252,4 +255,16 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
+
+	if (key == GLFW_KEY_UP && action == GLFW_PRESS)
+		cameraDistanceZ++;
+
+	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS)
+		cameraDistanceZ--;
+
+	if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
+		cameraDistanceX--;
+
+	if (key == GLFW_KEY_LEFT && action == GLFW_PRESS)
+		cameraDistanceX++;
 }

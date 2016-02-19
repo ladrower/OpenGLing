@@ -60,11 +60,11 @@ int main()
 
 	// Set up vertex data (and buffer(s)) and attribute pointers
     GLfloat vertices[] = {
-        // Positions          // Colors           // Texture Coords
-         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
-         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
-        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
-        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left 
+        // Positions              // Texture Coords
+         0.5f,  0.5f, 0.0f,      1.0f, 1.0f, // Top Right
+         0.5f, -0.5f, 0.0f,      1.0f, 0.0f, // Bottom Right
+        -0.5f, -0.5f, 0.0f,      0.0f, 0.0f, // Bottom Left
+        -0.5f,  0.5f, 0.0f,      0.0f, 1.0f  // Top Left 
     };
 	GLuint indices[] = {  // Note that we start from 0!
 		0, 1, 3,   // First Triangle
@@ -86,15 +86,11 @@ int main()
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	// Position attribute 0
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
 
-	// Color attribute 1
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(1);
-
 	// Texture attribute 2
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(2);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0); // Note that this is allowed, the call to glVertexAttribPointer registered VBO as the currently bound vertex buffer object so afterwards we can safely unbind
@@ -141,7 +137,6 @@ int main()
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_COLOR);
 
 	// Run game loop
 	while (!glfwWindowShouldClose(window))
@@ -158,6 +153,25 @@ int main()
 		// Activate shader
 		ourShader.Use();
 
+		// Create transformations
+		glm::mat4 model; // model matrix
+		glm::mat4 view; // view matrix
+		glm::mat4 projection; // projection matrix
+
+		model = glm::rotate(model, -55.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+		view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));	// Note that we're translating the scene in the reverse direction of where we want to move
+		projection = glm::perspective(45.0f, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
+
+		// Pass matrixes to their uniform variables in fragment shader
+		GLint modelLoc = glGetUniformLocation(ourShader.Program, "model");
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+		GLint viewLoc = glGetUniformLocation(ourShader.Program, "view");
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+
+		GLint projectionLoc = glGetUniformLocation(ourShader.Program, "projection");
+		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection)); // Note: currently we set the projection matrix each frame, but since the projection matrix rarely changes it's often best practice to set it outside the main loop only once.
+
 		// Bind Textures using texture units
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, textures[0]);
@@ -165,13 +179,6 @@ int main()
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, textures[1]);
 		glUniform1i(glGetUniformLocation(ourShader.Program, "customTexture2"), 1);
-
-		glm::mat4 trans;
-		trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
-		trans = glm::rotate(trans, (GLfloat)glfwGetTime() * 50.0f, glm::vec3(0.0f, 0.0f, 1.0f));
-
-		GLuint transformLoc = glGetUniformLocation(ourShader.Program, "transform");
-		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
 		// Draw container
 		glBindVertexArray(VAO);

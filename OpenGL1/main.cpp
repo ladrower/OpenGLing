@@ -166,6 +166,7 @@ int main()
 		glBindTexture(GL_TEXTURE_2D, textures[1]);
 		glUniform1i(glGetUniformLocation(ourShader.Program, "customTexture2"), 1);
 
+		// Do the first transformations
 		glm::mat4 trans;
 		trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
 		trans = glm::rotate(trans, (GLfloat)glfwGetTime() * 50.0f, glm::vec3(0.0f, 0.0f, 1.0f));
@@ -173,10 +174,23 @@ int main()
 		GLuint transformLoc = glGetUniformLocation(ourShader.Program, "transform");
 		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
-		// Draw container
+		// Draw the first container
 		glBindVertexArray(VAO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+
+		// Do the second transformations
+		trans = glm::mat4();
+		GLfloat scale = glm::sin((GLfloat)glfwGetTime());
+		trans = glm::translate(trans, glm::vec3(-0.5f, 0.5f, 0.0f));
+		trans = glm::scale(trans, glm::vec3(scale));
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
+		// Draw the second container with updated vertex shader uniform variable
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+		// Unbind
 		glBindVertexArray(0);
 
 

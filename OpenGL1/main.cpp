@@ -15,13 +15,24 @@
 #include "Shader.h"
 
 // Window dimensions
-const GLuint WIDTH = 1280, HEIGHT = 1024;
+const GLuint WIDTH = 1800, HEIGHT = 1000;
 
-GLfloat cameraDistanceZ = -3.0f;
+struct cameraAction {
+	GLboolean up = GL_FALSE;
+	GLboolean down = GL_FALSE;
+	GLboolean right = GL_FALSE;
+	GLboolean left = GL_FALSE;
+	GLboolean forward = GL_FALSE;
+	GLboolean back = GL_FALSE;
+} cameraActions;
+
 GLfloat cameraDistanceX = 0.0f;
+GLfloat cameraDistanceY = 0.0f;
+GLfloat cameraDistanceZ = -3.0f;
 
 // function interface
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
+void update_camera_positions(GLfloat step);
 
 int main()
 {
@@ -38,6 +49,7 @@ int main()
 		glfwTerminate();
 		return -1;
 	}
+
 
 	glfwMakeContextCurrent(window);
 
@@ -190,6 +202,8 @@ int main()
 		// Check events
 		glfwPollEvents();
 
+		update_camera_positions(0.05f);
+
 
 		// Rendering
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -203,7 +217,7 @@ int main()
 		glm::mat4 view; // view matrix
 		glm::mat4 projection; // projection matrix
 
-		view = glm::translate(view, glm::vec3(cameraDistanceX, 0.0f, cameraDistanceZ));	// Note that we're translating the scene in the reverse direction of where we want to move
+		view = glm::translate(view, glm::vec3(cameraDistanceX, cameraDistanceY, cameraDistanceZ));	// Note that we're translating the scene in the reverse direction of where we want to move
 		projection = glm::perspective(45.0f, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
 
 		// Pass matrixes to their uniform variables in fragment shader
@@ -219,9 +233,9 @@ int main()
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, textures[0]);
 		glUniform1i(glGetUniformLocation(ourShader.Program, "customTexture1"), 0);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, textures[1]);
-		glUniform1i(glGetUniformLocation(ourShader.Program, "customTexture2"), 1);
+		//glActiveTexture(GL_TEXTURE1);
+		//glBindTexture(GL_TEXTURE_2D, textures[1]);
+		//glUniform1i(glGetUniformLocation(ourShader.Program, "customTexture2"), 1);
 
 		// Draw
 		glBindVertexArray(VAO);
@@ -251,20 +265,60 @@ int main()
 	return 0;
 }
 
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
+void update_camera_positions(GLfloat step) {
+	if (cameraActions.up)
+		cameraDistanceY -= step;
+
+	if (cameraActions.down)
+		cameraDistanceY += step;
+
+	if (cameraActions.left)
+		cameraDistanceX += step;
+
+	if (cameraActions.right)
+		cameraDistanceX -= step;
+
+	if (cameraActions.forward)
+		cameraDistanceZ += step;
+
+	if (cameraActions.back)
+		cameraDistanceZ -= step;
+
+}
+
+void update_key_state(GLboolean &state, int action)
 {
+	if (action == GLFW_PRESS) {
+		state = GL_TRUE;
+	}
+	else if (action == GLFW_RELEASE) {
+		state = GL_FALSE;
+	}
+}
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
+{	
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
 
-	if (key == GLFW_KEY_UP && action == GLFW_PRESS)
-		cameraDistanceZ++;
-
-	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS)
-		cameraDistanceZ--;
-
-	if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
-		cameraDistanceX--;
-
-	if (key == GLFW_KEY_LEFT && action == GLFW_PRESS)
-		cameraDistanceX++;
+	switch (key) {
+	case GLFW_KEY_A:
+		update_key_state(cameraActions.forward, action);
+		break;
+	case GLFW_KEY_Z:
+		update_key_state(cameraActions.back, action);
+		break;
+	case GLFW_KEY_UP:
+		update_key_state(cameraActions.up, action);
+		break;
+	case GLFW_KEY_DOWN:
+		update_key_state(cameraActions.down, action);
+		break;
+	case GLFW_KEY_RIGHT:
+		update_key_state(cameraActions.right, action);
+		break;
+	case GLFW_KEY_LEFT:
+		update_key_state(cameraActions.left, action);
+		break;
+	}
 }

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <array>
 // GLEW
 #define GLEW_STATIC
 #include <GL/glew.h>
@@ -75,51 +76,52 @@ int main()
 
 	// Set up vertex data (and buffer(s)) and attribute pointers
 	GLfloat vertices[] = {
-		// Positions		  // Texture Coords
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		// Positions		  // Texture1 Coords	// Texture2 Coords
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,			0.0f, 0.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,			1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,			1.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,			1.0f, 1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,			0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,			0.0f, 0.0f,
+		
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,			0.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,			1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,			1.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,			1.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,			0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,			0.0f, 0.0f,
 
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,			0.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,			1.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,			1.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,			1.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,			0.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,			0.0f, 0.0f,
 
-		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,			0.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,			1.0f, 0.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,			1.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,			1.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,			0.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,			0.0f, 0.0f,
 
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,			0.0f, 0.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,			1.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,			1.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,			1.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,			0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,			0.0f, 0.0f,
+		
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,			0.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,			1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,			1.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,			1.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,			0.0f, 1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,			0.0f, 0.0f,
+		
 	};
 	// Cube positions in the game world
-	glm::vec3 cubePositions[] = {
+	std::array<glm::vec3, 10> cubePositions = {
 		glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(2.0f, 5.0f, -15.0f),
 		glm::vec3(-1.5f, -2.2f, -2.5f),
@@ -143,12 +145,18 @@ int main()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 	// Position attribute 0
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
 
 	// Texture attribute 2
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 7 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(2);
+
+	// Texture attribute 3
+	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 7 * sizeof(GLfloat), (GLvoid*)(5 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(3);
+
+
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0); // Note that this is allowed, the call to glVertexAttribPointer registered VBO as the currently bound vertex buffer object so afterwards we can safely unbind
 
@@ -179,14 +187,14 @@ int main()
 	glBindTexture(GL_TEXTURE_2D, textures[1]); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
 
 	// Set the texture wrapping parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT (usually basic wrapping method)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);	// Set texture wrapping to GL_REPEAT (usually basic wrapping method)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 	// Set texture filtering parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	// Load image, create texture and generate mipmaps
-	image = SOIL_load_image("resources/textures/awesomeface.png", &width, &height, 0, SOIL_LOAD_RGB);
+	image = SOIL_load_image("resources/textures/dataart.jpg", &width, &height, 0, SOIL_LOAD_RGB);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	SOIL_free_image_data(image);
@@ -233,13 +241,13 @@ int main()
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, textures[0]);
 		glUniform1i(glGetUniformLocation(ourShader.Program, "customTexture1"), 0);
-		//glActiveTexture(GL_TEXTURE1);
-		//glBindTexture(GL_TEXTURE_2D, textures[1]);
-		//glUniform1i(glGetUniformLocation(ourShader.Program, "customTexture2"), 1);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, textures[1]);
+		glUniform1i(glGetUniformLocation(ourShader.Program, "customTexture2"), 1);
 
 		// Draw
 		glBindVertexArray(VAO);
-		for (GLuint i = 0; i < 10; i++)
+		for (GLuint i = 0; i < cubePositions.size(); i++)
 		{
 			glm::mat4 model;
 			model = glm::translate(model, cubePositions[i]);
